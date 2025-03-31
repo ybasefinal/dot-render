@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>DOT代码验证测试</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 4px;
+      overflow: auto;
+    }
+    .example {
+      margin-bottom: 30px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 20px;
+    }
+    .valid {
+      border-left: 5px solid #4caf50;
+    }
+    .invalid {
+      border-left: 5px solid #f44336;
+    }
+  </style>
+</head>
+<body>
+  <h1>DOT代码验证测试</h1>
+  <p>这个页面用于测试DOT代码验证功能，展示哪些代码会被识别为有效的DOT代码并渲染，哪些会被视为无效代码而保持原样。</p>
+
+  <div class="example valid">
+    <h2>有效的DOT代码（应该被渲染）</h2>
+    <pre class="dot">
+digraph G {
+  A -> B -> C;
+  A -> C [label="直接路径"];
+}
+    </pre>
+  </div>
+
+  <div class="example valid">
+    <h2>使用```dot标记的有效DOT代码（应该被渲染）</h2>
+    
+```dot
+digraph 有效图 {
+  rankdir=LR;
+  A [shape=box];
+  B [shape=circle];
+  A -> B [label="有效边"];
+}
+```
+  </div>
+
+  <div class="example invalid">
+    <h2>无效的DOT代码 - 不符合基本语法（不应该被渲染）</h2>
+    <pre class="dot">
+这不是DOT代码，没有图声明和边定义。
+只是一些普通的文本内容。
+    </pre>
+  </div>
+
+  <div class="example invalid">
+    <h2>使用```dot标记但内容无效（不应该被渲染）</h2>
+    
+```dot
+这也不是有效的DOT代码
+只是使用了```dot标记
+但内容不符合DOT语法
+```
+  </div>
+
+  <div class="example valid">
+    <h2>简单但有效的DOT代码（应该被渲染）</h2>
+    <pre class="dot">
+graph G {
+  A -- B;
+}
+    </pre>
+  </div>
+
+  <div class="example invalid">
+    <h2>缺少大括号的DOT代码（不应该被渲染）</h2>
+    <pre class="dot">
+digraph G
+  A -> B -> C;
+  C -> A;
+    </pre>
+  </div>
+
+  <div class="example valid">
+    <h2>使用关键词但格式不标准的DOT代码（边界情况，可能被渲染）</h2>
+    
+```dot
+// 这个例子使用了DOT关键词，但格式不太标准
+digraph {
+  node [shape=box]
+  A->B
+  B->C
+}
+```
+  </div>
+
+  <div class="example invalid">
+    <h2>JavaScript代码误标为DOT代码（不应该被渲染）</h2>
+    <pre class="dot">
+function renderGraph() {
+  const data = {
+    nodes: ["A", "B", "C"],
+    edges: [["A", "B"], ["B", "C"]]
+  };
+  return data;
+}
+    </pre>
+  </div>
+
+  <div class="example invalid">
+    <h2>HTML代码误标为DOT代码（不应该被渲染）</h2>
+    
+```dot
+<div class="graph">
+  <svg width="100" height="100">
+    <circle cx="50" cy="50" r="40" stroke="black" stroke-width="2" fill="blue" />
+  </svg>
+</div>
+```
+  </div>
+
+  <div class="example valid">
+    <h2>复杂但有效的DOT代码（应该被渲染）</h2>
+    <pre class="dot">
+digraph G {
+  subgraph cluster_0 {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    a0 -> a1 -> a2 -> a3;
+    label = "过程 A";
+  }
+
+  subgraph cluster_1 {
+    node [style=filled];
+    b0 -> b1 -> b2 -> b3;
+    label = "过程 B";
+    color=blue;
+  }
+
+  start -> a0;
+  start -> b0;
+  a1 -> b3;
+  b2 -> a3;
+  a3 -> a0;
+  a3 -> end;
+  b3 -> end;
+
+  start [shape=Mdiamond];
+  end [shape=Msquare];
+}
+    </pre>
+  </div>
+</body>
+</html> 

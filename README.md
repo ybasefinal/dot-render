@@ -1,0 +1,147 @@
+# DOT Renderer 浏览器插件
+
+一个将网页中的DOT图形描述语言代码渲染为SVG图形的浏览器扩展。
+
+## 功能特点
+
+- 自动检测并渲染页面中的DOT代码
+- 支持多种DOT代码标记方式（pre.dot, ```dot等）
+- 支持纯文本形式的```dot代码块（不需要特殊的HTML标签）
+- 支持在同一个元素中包含多个```dot代码块
+- 智能验证代码内容是否符合DOT语法，避免误渲染
+- 使用最新版Viz.js库进行高质量渲染
+- 提供源代码与渲染图形的切换功能
+- 支持中文标签和属性
+- 美观的图形样式与交互效果
+- 可手动触发渲染
+
+## 安装方法
+
+### 下载Viz.js库
+
+在安装之前，您需要先下载最新版的Viz.js库文件：
+
+1. 从 [Viz.js GitHub Releases](https://github.com/mdaines/viz.js/releases) 下载最新版的viz-standalone.js
+2. 或者从CDN获取：https://unpkg.com/@viz-js/viz@3.2.4/lib/viz-standalone.js
+3. 将下载的文件放置在 `lib/viz-standalone.js` 位置
+
+### Chrome浏览器
+
+1. 下载或克隆此存储库到本地
+2. 确保已正确放置Viz.js库文件
+3. 打开Chrome浏览器，进入扩展程序页面 (chrome://extensions/)
+4. 开启"开发者模式"（右上角开关）
+5. 点击"加载已解压的扩展程序"按钮
+6. 选择本项目的文件夹
+
+### Firefox浏览器
+
+1. 下载或克隆此存储库到本地
+2. 确保已正确放置Viz.js库文件
+3. 打开Firefox浏览器，进入附加组件页面 (about:addons)
+4. 点击齿轮图标，选择"调试附加组件"
+5. 点击"临时载入附加组件..."
+6. 选择项目中的manifest.json文件
+
+## 使用方法
+
+安装插件后，插件会自动检测页面中的DOT代码并渲染。DOT代码可以用以下三种方式编写：
+
+```html
+<!-- 方法1：使用pre标签和dot类 -->
+<pre class="dot">
+digraph G {
+  A -> B;
+  B -> C;
+}
+</pre>
+
+<!-- 方法2：使用带有language-dot类的code标签（通常由Markdown渲染器生成） -->
+<code class="language-dot">
+digraph G {
+  A -> B;
+  B -> C;
+}
+</code>
+```
+
+在Markdown中或纯文本中，可以直接使用以下格式（无需特殊HTML标签）：
+
+```
+```dot
+digraph G {
+  A -> B;
+  B -> C;
+}
+```
+
+您还可以在同一个HTML元素中包含多个```dot代码块，它们都会被正确渲染：
+
+```html
+<div>
+  第一个图：
+  ```dot
+  digraph G1 {
+    A -> B -> C;
+  }
+  ```
+  
+  第二个图：
+  ```dot
+  digraph G2 {
+    D -> E -> F;
+  }
+  ```
+</div>
+```
+
+## 项目结构
+
+```
+dot-renderer/
+├── manifest.json      # 插件配置文件
+├── popup.html         # 插件弹出窗口
+├── popup.css          # 弹出窗口样式
+├── popup.js           # 弹出窗口脚本
+├── content.js         # 内容脚本（处理页面渲染）
+├── styles.css         # 内容样式
+├── lib/               # 第三方库
+│   └── viz-standalone.js # Viz.js (Graphviz的JavaScript实现)
+├── images/            # 插件图标
+│   ├── icon16.png
+│   ├── icon48.png
+│   └── icon128.png
+├── test.html          # 测试页面
+├── test-multi.html    # 多DOT代码块测试页面
+└── test-validation.html # DOT代码验证测试页面
+```
+
+## 关于Viz.js库
+
+本插件使用最新版的Viz.js库来渲染DOT代码。新版Viz.js使用Promise-based API进行渲染：
+
+```javascript
+// 初始化Viz实例
+Viz.instance().then(function(viz) {
+  // 渲染DOT代码为SVG元素
+  viz.renderSVGElement("digraph { a -> b }").then(function(svgElement) {
+    // 将SVG元素添加到页面
+    document.getElementById("graph").appendChild(svgElement);
+  });
+});
+```
+
+## 注意事项
+
+- 本插件依赖于最新版的Viz.js库进行DOT代码渲染
+- 支持三种方式的DOT代码：pre标签、code标签和纯文本形式的```dot代码块
+- 插件会智能验证代码内容是否符合DOT语法，只渲染有效的DOT代码
+- 支持在同一个元素中包含多个```dot代码块，每个都会被分别渲染
+- 对于无效的DOT代码（不符合语法要求），将保持原样不进行渲染
+- 渲染大型或复杂图形可能需要一定时间，会显示加载指示器
+- 如遇渲染错误，会显示错误信息
+- 可通过点击插件图标，手动触发页面重新渲染
+
+## 许可证
+
+MIT 

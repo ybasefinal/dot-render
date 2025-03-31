@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>DOT Renderer</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>DOT 代码渲染</h1>
+    <div class="status">
+      <div id="status-message">已启用 - 自动渲染页面中的DOT代码</div>
+    </div>
+    <div class="buttons">
+      <button id="render-button">手动渲染</button>
+    </div>
+    <div class="info">
+      <p>使用说明:</p>
+      <ul>
+        <li>在页面中使用 <code>&lt;pre class="dot"&gt;...&lt;/pre&gt;</code> 标签包围DOT代码</li>
+        <li>或者使用三个反引号标记的代码块: <code>```dot ... ```</code></li>
+      </ul>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html> 

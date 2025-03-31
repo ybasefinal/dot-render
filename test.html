@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>DOT渲染器测试</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 4px;
+      overflow: auto;
+    }
+    .example {
+      margin-bottom: 30px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>DOT渲染器测试页面</h1>
+  <p>这个页面包含几个DOT语言示例，可以用来测试DOT渲染浏览器插件。</p>
+
+  <div class="example">
+    <h2>纯文本形式的```dot代码块测试</h2>
+    <p>下面是一个直接使用Markdown格式的DOT代码块：</p>
+    
+    ```dot
+    digraph Simple {
+      A -> B -> C;
+      A -> C [label="直接路径", color=red];
+    }
+    ```
+  </div>
+  
+  <div class="example">
+    <h2>简单有向图示例</h2>
+    <pre class="dot">
+digraph G {
+  A -> B;
+  B -> C;
+  C -> D;
+  D -> A;
+}
+    </pre>
+  </div>
+  
+  <div class="example">
+    <h2>带样式的图示例</h2>
+    <pre class="dot">
+digraph G {
+  // 节点样式
+  node [shape=box, style=filled, color=lightblue];
+  
+  // 边样式
+  edge [color=grey, arrowhead=open];
+  
+  // 节点
+  开始 [shape=oval];
+  处理 [shape=box];
+  决策 [shape=diamond];
+  结束 [shape=oval];
+  
+  // 边
+  开始 -> 处理;
+  处理 -> 决策;
+  决策 -> 处理 [label="否"];
+  决策 -> 结束 [label="是"];
+}
+    </pre>
+  </div>
+  
+  <div class="example">
+    <h2>复杂图示例</h2>
+    <pre class="dot">
+digraph G {
+  rankdir=LR;
+  
+  subgraph cluster_0 {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    a0 -> a1 -> a2 -> a3;
+    label = "流程 A";
+  }
+  
+  subgraph cluster_1 {
+    node [style=filled];
+    b0 -> b1 -> b2 -> b3;
+    label = "流程 B";
+    color=blue;
+  }
+  
+  start -> a0;
+  start -> b0;
+  a1 -> b3;
+  b2 -> a3;
+  a3 -> end;
+  b3 -> end;
+  
+  start [shape=Mdiamond];
+  end [shape=Msquare];
+}
+    </pre>
+  </div>
+  
+  <div class="example">
+    <h2>具有中文标签的图示例</h2>
+    <pre class="dot">
+graph G {
+  fontname="Microsoft YaHei";
+  node [fontname="Microsoft YaHei"];
+  edge [fontname="Microsoft YaHei"];
+  
+  数据库 -- 服务器 [label="连接"];
+  服务器 -- 应用 [label="API"];
+  应用 -- 用户界面 [label="展示"];
+  用户界面 -- 用户 [label="交互"];
+  
+  数据库 [shape=cylinder, style=filled, fillcolor=lightblue];
+  服务器 [shape=box3d, style=filled, fillcolor=lightgreen];
+  应用 [shape=folder, style=filled, fillcolor=lightyellow];
+  用户界面 [shape=note, style=filled, fillcolor=lightpink];
+  用户 [shape=person, style=filled, fillcolor=lightgrey];
+}
+    </pre>
+  </div>
+
+  <div class="example">
+    <h2>另一个纯文本形式的```dot代码块测试</h2>
+    <p>这是另一个测试示例：</p>
+    
+```dot
+// 使用digraph关键字创建有向图
+digraph ZooKeeper请求处理 {
+  rankdir=LR;
+  node [shape=box, style=rounded];
+
+  // 定义流程节点
+  Client [label="客户端请求", style=filled, fillcolor=lightgreen];
+  ServerCnxn [label="ServerCnxn\n(网络连接管理)", style=filled, fillcolor=lightyellow];
+  PrepRequest [label="PrepRequestProcessor\n(请求预处理)", style=filled, fillcolor=lightblue];
+  SyncRequest [label="SyncRequestProcessor\n(同步请求处理)", style=filled, fillcolor=lightpink];
+  FinalRequest [label="FinalRequestProcessor\n(最终请求处理)", style=filled, fillcolor=lightgrey];
+  DataTree [label="数据树", shape=cylinder, style=filled, fillcolor=lightcyan];
+  
+  // 流程连接
+  Client -> ServerCnxn [label="1. 发送请求"];
+  ServerCnxn -> PrepRequest [label="2. 预处理请求"];
+  PrepRequest -> SyncRequest [label="3. 处理事务"];
+  SyncRequest -> FinalRequest [label="4. 应用变更"];
+  FinalRequest -> DataTree [label="5. 更新数据"];
+  FinalRequest -> ServerCnxn [label="6. 返回结果"];
+  ServerCnxn -> Client [label="7. 响应客户端"];
+}
+```
+  </div>
+</body>
+</html> 

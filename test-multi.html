@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>多DOT代码块渲染测试</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1, h2, h3 {
+      color: #333;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 4px;
+      overflow: auto;
+    }
+    .example {
+      margin-bottom: 30px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>多DOT代码块渲染测试</h1>
+  <p>这个页面测试在同一个父元素中包含多个DOT代码块的情况。</p>
+
+  <div class="example">
+    <h2>同一个div中的多个DOT代码块</h2>
+    <p>下面是第一个DOT代码块：</p>
+    
+```dot
+digraph 第一个图 {
+  A -> B -> C;
+  A -> C [label="直接路径", color=red];
+}
+```
+
+    <p>下面是第二个DOT代码块：</p>
+    
+```dot
+digraph 第二个图 {
+  D -> E -> F;
+  D -> F [label="另一条路径", color=blue];
+}
+```
+
+    <p>下面是第三个DOT代码块：</p>
+    
+```dot
+digraph 第三个图 {
+  G -> H -> I;
+  G -> I [label="第三条路径", color=green];
+}
+```
+  </div>
+
+  <div class="example">
+    <h2>连续的DOT代码块（无间隔文本）</h2>
+    
+```dot
+digraph 连续图1 {
+  node [shape=box, style=filled, color=lightblue];
+  A -> B -> C;
+}
+```
+```dot
+digraph 连续图2 {
+  node [shape=diamond, style=filled, color=lightpink];
+  D -> E -> F;
+}
+```
+```dot
+digraph 连续图3 {
+  node [shape=ellipse, style=filled, color=lightgreen];
+  G -> H -> I;
+}
+```
+  </div>
+
+  <div class="example">
+    <h2>复杂情况：嵌套在多个层级的元素中</h2>
+    <div>
+      <p>嵌套在更深层级的DOT代码块：</p>
+      <div>
+        <span>
+```dot
+digraph 嵌套图 {
+  rankdir=LR;
+  A [shape=box];
+  B [shape=circle];
+  C [shape=diamond];
+  A -> B -> C;
+}
+```
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="example">
+    <h2>包含大量文本的情况</h2>
+    <p>这是一段长文本，其中嵌入了DOT代码。Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at lacinia ex. Donec hendrerit lorem non odio efficitur, non faucibus eros luctus. Nunc laoreet blandit urna, at accumsan orci vehicula in.</p>
+    
+```dot
+digraph 文本中的图 {
+  A -> B [label="文本中的边"];
+  B -> C;
+  C -> A;
+}
+```
+
+    <p>这是另一段长文本，其中也嵌入了DOT代码。Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer sed nisi in risus aliquam euismod. Sed scelerisque ligula vel ipsum aliquam, eu scelerisque nisi sagittis.</p>
+    
+```dot
+digraph 另一个文本中的图 {
+  D -> E [label="另一个文本中的边"];
+  E -> F;
+  F -> D;
+}
+```
+  </div>
+</body>
+</html> 
