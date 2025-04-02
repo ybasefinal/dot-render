@@ -396,37 +396,114 @@ window.dotRenderer = (function() {
     function processSvgElement(svgElement) {
       // 创建一个包装容器
       const container = document.createElement('div');
-      container.className = 'dot-render-container';
+      container.className = 'dot-render-wrapper';
+      
+      // 创建SVG图像容器
+      const svgContainer = document.createElement('div');
+      svgContainer.className = 'dot-render-container';
+      
+      // 创建按钮控制区
+      const controlPanel = document.createElement('div');
+      controlPanel.className = 'dot-control-panel';
       
       // 移除加载指示器
       loadingElement.remove();
       
       // 添加SVG元素到容器
-      container.appendChild(svgElement);
+      svgContainer.appendChild(svgElement);
       
       // 添加查看源代码按钮
       const sourceButton = document.createElement('button');
       sourceButton.textContent = '查看源代码';
-      sourceButton.className = 'dot-source-button';
+      sourceButton.className = 'dot-control-button';
+      
+      // 添加放大按钮
+      const zoomButton = document.createElement('button');
+      zoomButton.textContent = '放大';
+      zoomButton.className = 'dot-control-button';
+      
+      // 添加SVG下载按钮
+      const svgButton = document.createElement('button');
+      svgButton.textContent = 'SVG';
+      svgButton.className = 'dot-control-button';
+      svgButton.title = '下载SVG格式';
+      
+      // 添加PNG下载按钮
+      const pngButton = document.createElement('button');
+      pngButton.textContent = 'PNG';
+      pngButton.className = 'dot-control-button';
+      pngButton.title = '下载PNG格式';
       
       // 切换显示源代码和图形
       let showingSource = false;
       sourceButton.addEventListener('click', function() {
         if (showingSource) {
           element.style.display = 'none';
-          container.style.display = 'block';
+          svgContainer.style.display = 'block';
           sourceButton.textContent = '查看源代码';
         } else {
           element.style.display = 'block';
-          container.style.display = 'none';
+          svgContainer.style.display = 'none';
           sourceButton.textContent = '查看图形';
         }
         showingSource = !showingSource;
       });
       
-      // 插入SVG容器和按钮
+      // 放大功能实现
+      zoomButton.addEventListener('click', function() {
+        // 创建弹出层
+        const overlay = document.createElement('div');
+        overlay.className = 'dot-zoom-overlay';
+        
+        // 创建弹出层内容容器
+        const zoomContainer = document.createElement('div');
+        zoomContainer.className = 'dot-zoom-container';
+        
+        // 复制SVG以在弹出层中显示
+        const zoomedSvg = svgElement.cloneNode(true);
+        zoomContainer.appendChild(zoomedSvg);
+        
+        // 点击弹出层背景关闭弹出层
+        overlay.addEventListener('click', function(e) {
+          if (e.target === overlay) {
+            document.body.removeChild(overlay);
+          }
+        });
+        
+        // 按ESC键关闭弹出层
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && document.body.contains(overlay)) {
+            document.body.removeChild(overlay);
+          }
+        });
+        
+        // 将弹出层添加到body
+        overlay.appendChild(zoomContainer);
+        document.body.appendChild(overlay);
+      });
+      
+      // SVG下载功能
+      svgButton.addEventListener('click', function() {
+        downloadAsSVG(svgElement);
+      });
+      
+      // PNG下载功能
+      pngButton.addEventListener('click', function() {
+        downloadAsPNG(svgElement);
+      });
+      
+      // 将按钮添加到控制面板
+      controlPanel.appendChild(sourceButton);
+      controlPanel.appendChild(zoomButton);
+      controlPanel.appendChild(svgButton);
+      controlPanel.appendChild(pngButton);
+      
+      // 构建完整的容器结构
+      container.appendChild(svgContainer);
+      container.appendChild(controlPanel);
+      
+      // 插入容器
       element.parentNode.insertBefore(container, element.nextSibling);
-      container.appendChild(sourceButton);
       
       // 隐藏原始代码
       element.style.display = 'none';
@@ -453,6 +530,101 @@ window.dotRenderer = (function() {
     
     // 插入错误提示
     element.parentNode.insertBefore(errorElement, element.nextSibling);
+  }
+  
+  // 下载SVG格式
+  function downloadAsSVG(svgElement) {
+    // 复制SVG元素
+    const svgClone = svgElement.cloneNode(true);
+    
+    // 获取SVG的尺寸
+    const svgRect = svgElement.getBoundingClientRect();
+    const width = svgRect.width;
+    const height = svgRect.height;
+    
+    // 设置尺寸以确保完整显示
+    svgClone.setAttribute('width', width);
+    svgClone.setAttribute('height', height);
+    
+    // 创建SVG字符串
+    const svgData = new XMLSerializer().serializeToString(svgClone);
+    
+    // 添加XML声明和命名空间
+    const svgBlob = new Blob([
+      '<?xml version="1.0" standalone="no"?>\r\n',
+      '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\r\n',
+      svgData
+    ], {type: 'image/svg+xml'});
+    
+    const url = URL.createObjectURL(svgBlob);
+    
+    // 创建下载链接
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'dot-diagram.svg';
+    
+    // 触发下载
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+  
+  // 下载PNG格式
+  function downloadAsPNG(svgElement) {
+    // 获取SVG尺寸
+    const svgRect = svgElement.getBoundingClientRect();
+    const width = svgRect.width;
+    const height = svgRect.height;
+    
+    // 创建Canvas元素
+    const canvas = document.createElement('canvas');
+    canvas.width = width * 2; // 2倍缩放获得更高质量
+    canvas.height = height * 2;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(2, 2);
+    
+    // 创建图像
+    const img = new Image();
+    
+    // 将SVG转换为Data URL
+    const svgData = new XMLSerializer().serializeToString(svgElement);
+    const svgURL = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData);
+    
+    // 图像加载完成后绘制到Canvas并下载
+    img.onload = function() {
+      // 绘制白色背景
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // 绘制SVG
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // 转换为PNG并下载
+      try {
+        const pngURL = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = pngURL;
+        link.download = 'dot-diagram.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (e) {
+        console.error('PNG导出失败:', e);
+        alert('PNG导出失败，可能是由于浏览器的安全限制。请尝试下载SVG格式。');
+      }
+    };
+    
+    // 加载图像
+    img.src = svgURL;
+    
+    // 图像加载失败处理
+    img.onerror = function() {
+      console.error('图像加载失败');
+      alert('图像加载失败，请尝试下载SVG格式。');
+    };
   }
   
   // 获取已渲染数量
