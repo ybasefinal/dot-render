@@ -3,7 +3,7 @@
   "name": "DOT Renderer",
   "version": "1.0",
   "description": "将网页中的DOT代码渲染为SVG图形",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "action": {
     "default_popup": "popup.html"
   },

@@ -73,4 +73,43 @@ code {
   padding: 2px 4px;
   border-radius: 3px;
   font-family: Consolas, 'Courier New', monospace;
+}
+
+/* 添加配置区域样式 */
+.config {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.config-item {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.config-item label {
+  margin-right: 8px;
+  font-weight: 500;
+}
+
+.config-item select {
+  padding: 4px 8px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+#save-config {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+#save-config:hover {
+  background-color: #388e3c;
 } 

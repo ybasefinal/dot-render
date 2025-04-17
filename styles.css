@@ -44,6 +44,13 @@
   background-color: #424242;
 }
 
+/* 添加活动格式按钮的样式 */
+.dot-control-button.active-format {
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+}
+
 /* 放大弹出层样式 */
 .dot-zoom-overlay {
   position: fixed;
@@ -153,4 +160,21 @@
 .dot-render-container g.edge:hover polygon {
   fill: #424242;
   stroke: #424242;
+}
+
+/* PNG图像样式 */
+.dot-render-container img.dot-render-png {
+  max-width: 100%;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+/* 放大弹出层中的PNG图像样式 */
+.dot-zoom-container img.dot-render-png {
+  max-width: 100%;
+  height: auto !important;
+  display: block;
+  object-fit: contain;
 } 

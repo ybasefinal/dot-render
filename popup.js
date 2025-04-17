@@ -1,5 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
   const renderButton = document.getElementById('render-button');
+  const saveConfigButton = document.getElementById('save-config');
+  const formatSelect = document.getElementById('render-format');
+  
+  // 加载保存的配置
+  loadConfig();
   
   renderButton.addEventListener('click', function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -10,9 +15,63 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  saveConfigButton.addEventListener('click', function() {
+    saveConfig();
+  });
+
   // 更新状态显示
   updateStatus();
 });
+
+// 保存配置
+function saveConfig() {
+  const format = document.getElementById('render-format').value;
+  
+  // 保存到chrome.storage
+  chrome.storage.sync.set({
+    renderFormat: format
+  }, function() {
+    // 保存成功后显示提示
+    const saveButton = document.getElementById('save-config');
+    const originalText = saveButton.textContent;
+    saveButton.textContent = '已保存';
+    saveButton.disabled = true;
+    
+    // 将配置传递给当前激活的标签页
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.scripting.executeScript({
+        target: {tabId: tabs[0].id},
+        function: updateConfig,
+        args: [{renderFormat: format}]
+      });
+    });
+    
+    // 恢复按钮状态
+    setTimeout(function() {
+      saveButton.textContent = originalText;
+      saveButton.disabled = false;
+    }, 1500);
+  });
+}
+
+// 加载配置
+function loadConfig() {
+  chrome.storage.sync.get({
+    renderFormat: 'svg' // 默认值是SVG
+  }, function(items) {
+    document.getElementById('render-format').value = items.renderFormat;
+  });
+}
+
+// 更新content script的配置
+function updateConfig(config) {
+  if (window.dotRenderer && typeof window.dotRenderer.updateConfig === 'function') {
+    window.dotRenderer.updateConfig(config);
+    return '配置已更新';
+  } else {
+    return '无法更新配置';
+  }
+}
 
 // 手动触发渲染函数
 function triggerManualRender() {
