@@ -548,146 +548,6 @@ window.dotRenderer = (function() {
       }
     }
     
-    // 处理图像元素的函数 (PNG模式)
-    function processImageElement(imgElement) {
-      // 创建一个包装容器
-      const container = document.createElement('div');
-      container.className = 'dot-render-wrapper';
-      
-      // 创建图像容器
-      const imgContainer = document.createElement('div');
-      imgContainer.className = 'dot-render-container';
-      
-      // 创建按钮控制区
-      const controlPanel = document.createElement('div');
-      controlPanel.className = 'dot-control-panel';
-      
-      // 移除加载指示器
-      loadingElement.remove();
-      
-      // 添加图像元素到容器
-      imgContainer.appendChild(imgElement);
-      
-      // 添加查看源代码按钮
-      const sourceButton = document.createElement('button');
-      sourceButton.textContent = '查看源代码';
-      sourceButton.className = 'dot-control-button';
-      
-      // 添加放大按钮
-      const zoomButton = document.createElement('button');
-      zoomButton.textContent = '放大';
-      zoomButton.className = 'dot-control-button';
-      
-      // 添加SVG下载按钮
-      const svgButton = document.createElement('button');
-      svgButton.textContent = 'SVG';
-      svgButton.className = 'dot-control-button';
-      svgButton.title = '下载SVG格式';
-      
-      // 添加PNG下载按钮
-      const pngButton = document.createElement('button');
-      pngButton.textContent = 'PNG';
-      pngButton.className = 'dot-control-button active-format';
-      pngButton.title = '下载PNG格式';
-      
-      // 切换显示源代码和图形
-      let showingSource = false;
-      sourceButton.addEventListener('click', function() {
-        if (showingSource) {
-          element.style.display = 'none';
-          imgContainer.style.display = 'block';
-          sourceButton.textContent = '查看源代码';
-        } else {
-          element.style.display = 'block';
-          imgContainer.style.display = 'none';
-          sourceButton.textContent = '查看图形';
-        }
-        showingSource = !showingSource;
-      });
-      
-      // 放大功能实现
-      zoomButton.addEventListener('click', function() {
-        // 创建弹出层
-        const overlay = document.createElement('div');
-        overlay.className = 'dot-zoom-overlay';
-        
-        // 创建弹出层内容容器
-        const zoomContainer = document.createElement('div');
-        zoomContainer.className = 'dot-zoom-container';
-        
-        // 复制图像以在弹出层中显示
-        const zoomedImg = imgElement.cloneNode(true);
-        zoomContainer.appendChild(zoomedImg);
-        
-        // 点击弹出层背景关闭弹出层
-        overlay.addEventListener('click', function(e) {
-          if (e.target === overlay) {
-            document.body.removeChild(overlay);
-          }
-        });
-        
-        // 按ESC键关闭弹出层
-        document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape' && document.body.contains(overlay)) {
-            document.body.removeChild(overlay);
-          }
-        });
-        
-        // 将弹出层添加到body
-        overlay.appendChild(zoomContainer);
-        document.body.appendChild(overlay);
-      });
-      
-      // SVG下载功能
-      svgButton.addEventListener('click', function() {
-        const svgData = imgElement.getAttribute('data-original-svg');
-        if (svgData) {
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = svgData;
-          const svgElement = tempDiv.firstChild;
-          downloadAsSVG(svgElement);
-        } else {
-          alert('SVG数据不可用');
-        }
-      });
-      
-      // PNG下载功能
-      pngButton.addEventListener('click', function() {
-        downloadImageAsPNG(imgElement);
-      });
-      
-      // 根据配置，添加下载按钮点击事件
-      const defaultDownloadButton = document.createElement('button');
-      defaultDownloadButton.textContent = '下载';
-      defaultDownloadButton.className = 'dot-control-button';
-      defaultDownloadButton.title = '下载PNG格式';
-      
-      defaultDownloadButton.addEventListener('click', function() {
-        downloadImageAsPNG(imgElement);
-      });
-      
-      // 将按钮添加到控制面板
-      controlPanel.appendChild(sourceButton);
-      controlPanel.appendChild(zoomButton);
-      controlPanel.appendChild(defaultDownloadButton);
-      controlPanel.appendChild(svgButton);
-      controlPanel.appendChild(pngButton);
-      
-      // 构建完整的容器结构
-      container.appendChild(imgContainer);
-      container.appendChild(controlPanel);
-      
-      // 插入容器
-      element.parentNode.insertBefore(container, element.nextSibling);
-      
-      // 隐藏原始代码
-      element.style.display = 'none';
-      
-      // 标记为已渲染
-      element.setAttribute('data-dot-rendered', 'true');
-      renderedCount++;
-    }
-    
     // 处理SVG元素的函数
     function processSvgElement(svgElement) {
       // 创建一个包装容器
@@ -718,17 +578,23 @@ window.dotRenderer = (function() {
       zoomButton.textContent = '放大';
       zoomButton.className = 'dot-control-button';
       
-      // 添加SVG下载按钮
+      // 添加SVG格式按钮
       const svgButton = document.createElement('button');
       svgButton.textContent = 'SVG';
       svgButton.className = 'dot-control-button active-format';
-      svgButton.title = '下载SVG格式';
+      svgButton.title = '切换为SVG格式';
       
-      // 添加PNG下载按钮
+      // 添加PNG格式按钮
       const pngButton = document.createElement('button');
       pngButton.textContent = 'PNG';
       pngButton.className = 'dot-control-button';
-      pngButton.title = '下载PNG格式';
+      pngButton.title = '切换为PNG格式';
+      
+      // 添加下载按钮
+      const downloadButton = document.createElement('button');
+      downloadButton.textContent = '下载';
+      downloadButton.className = 'dot-control-button';
+      downloadButton.title = '下载SVG格式';
       
       // 切换显示源代码和图形
       let showingSource = false;
@@ -778,35 +644,199 @@ window.dotRenderer = (function() {
         document.body.appendChild(overlay);
       });
       
-      // SVG下载功能
+      // 下载按钮功能
+      downloadButton.addEventListener('click', function() {
+        downloadAsSVG(svgElement);
+      });
+      
+      // SVG按钮功能（切换到SVG格式）
       svgButton.addEventListener('click', function() {
-        downloadAsSVG(svgElement);
+        // 已经是SVG格式，不需要切换
       });
       
-      // PNG下载功能
+      // PNG按钮功能（切换到PNG格式）
       pngButton.addEventListener('click', function() {
-        downloadAsPNG(svgElement);
-      });
-      
-      // 根据配置，添加下载按钮点击事件
-      const defaultDownloadButton = document.createElement('button');
-      defaultDownloadButton.textContent = '下载';
-      defaultDownloadButton.className = 'dot-control-button';
-      defaultDownloadButton.title = '下载SVG格式';
-      
-      defaultDownloadButton.addEventListener('click', function() {
-        downloadAsSVG(svgElement);
+        // 保存当前配置
+        updateConfig({renderFormat: 'png'});
+        
+        // 从DOM中移除当前渲染
+        container.remove();
+        
+        // 清除已渲染标记以允许重新渲染
+        element.removeAttribute('data-dot-rendered');
+        
+        // 转换为PNG格式
+        convertSvgToPng(svgElement, function(imgElement) {
+          processImageElement(imgElement);
+        });
       });
       
       // 将按钮添加到控制面板
       controlPanel.appendChild(sourceButton);
       controlPanel.appendChild(zoomButton);
-      controlPanel.appendChild(defaultDownloadButton);
+      controlPanel.appendChild(downloadButton);
       controlPanel.appendChild(svgButton);
       controlPanel.appendChild(pngButton);
       
       // 构建完整的容器结构
       container.appendChild(svgContainer);
+      container.appendChild(controlPanel);
+      
+      // 插入容器
+      element.parentNode.insertBefore(container, element.nextSibling);
+      
+      // 隐藏原始代码
+      element.style.display = 'none';
+      
+      // 标记为已渲染
+      element.setAttribute('data-dot-rendered', 'true');
+      renderedCount++;
+    }
+    
+    // 处理图像元素的函数 (PNG模式)
+    function processImageElement(imgElement) {
+      // 创建一个包装容器
+      const container = document.createElement('div');
+      container.className = 'dot-render-wrapper';
+      
+      // 创建图像容器
+      const imgContainer = document.createElement('div');
+      imgContainer.className = 'dot-render-container';
+      
+      // 创建按钮控制区
+      const controlPanel = document.createElement('div');
+      controlPanel.className = 'dot-control-panel';
+      
+      // 移除可能存在的加载指示器
+      if (loadingElement && loadingElement.parentNode) {
+        loadingElement.remove();
+      }
+      
+      // 添加图像元素到容器
+      imgContainer.appendChild(imgElement);
+      
+      // 添加查看源代码按钮
+      const sourceButton = document.createElement('button');
+      sourceButton.textContent = '查看源代码';
+      sourceButton.className = 'dot-control-button';
+      
+      // 添加放大按钮
+      const zoomButton = document.createElement('button');
+      zoomButton.textContent = '放大';
+      zoomButton.className = 'dot-control-button';
+      
+      // 添加SVG格式按钮
+      const svgButton = document.createElement('button');
+      svgButton.textContent = 'SVG';
+      svgButton.className = 'dot-control-button';
+      svgButton.title = '切换为SVG格式';
+      
+      // 添加PNG格式按钮
+      const pngButton = document.createElement('button');
+      pngButton.textContent = 'PNG';
+      pngButton.className = 'dot-control-button active-format';
+      pngButton.title = '切换为PNG格式';
+      
+      // 添加下载按钮
+      const downloadButton = document.createElement('button');
+      downloadButton.textContent = '下载';
+      downloadButton.className = 'dot-control-button';
+      downloadButton.title = '下载PNG格式';
+      
+      // 切换显示源代码和图形
+      let showingSource = false;
+      sourceButton.addEventListener('click', function() {
+        if (showingSource) {
+          element.style.display = 'none';
+          imgContainer.style.display = 'block';
+          sourceButton.textContent = '查看源代码';
+        } else {
+          element.style.display = 'block';
+          imgContainer.style.display = 'none';
+          sourceButton.textContent = '查看图形';
+        }
+        showingSource = !showingSource;
+      });
+      
+      // 放大功能实现
+      zoomButton.addEventListener('click', function() {
+        // 创建弹出层
+        const overlay = document.createElement('div');
+        overlay.className = 'dot-zoom-overlay';
+        
+        // 创建弹出层内容容器
+        const zoomContainer = document.createElement('div');
+        zoomContainer.className = 'dot-zoom-container';
+        
+        // 复制图像以在弹出层中显示
+        const zoomedImg = imgElement.cloneNode(true);
+        zoomContainer.appendChild(zoomedImg);
+        
+        // 点击弹出层背景关闭弹出层
+        overlay.addEventListener('click', function(e) {
+          if (e.target === overlay) {
+            document.body.removeChild(overlay);
+          }
+        });
+        
+        // 按ESC键关闭弹出层
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && document.body.contains(overlay)) {
+            document.body.removeChild(overlay);
+          }
+        });
+        
+        // 将弹出层添加到body
+        overlay.appendChild(zoomContainer);
+        document.body.appendChild(overlay);
+      });
+      
+      // 下载按钮功能
+      downloadButton.addEventListener('click', function() {
+        downloadImageAsPNG(imgElement);
+      });
+      
+      // SVG按钮功能（切换到SVG格式）
+      svgButton.addEventListener('click', function() {
+        // 获取原始SVG数据
+        const svgData = imgElement.getAttribute('data-original-svg');
+        if (svgData) {
+          // 更新配置
+          updateConfig({renderFormat: 'svg'});
+          
+          // 移除当前渲染
+          container.remove();
+          
+          // 清除已渲染标记以允许重新渲染
+          element.removeAttribute('data-dot-rendered');
+          
+          // 创建SVG元素
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = svgData;
+          const svgElement = tempDiv.firstChild;
+          
+          // 渲染SVG
+          processSvgElement(svgElement);
+        } else {
+          console.error('无法找到原始SVG数据，无法切换格式');
+          alert('无法切换到SVG格式，原始SVG数据不可用');
+        }
+      });
+      
+      // PNG按钮功能（已是PNG格式，无需操作）
+      pngButton.addEventListener('click', function() {
+        // 已经是PNG格式，不需要切换
+      });
+      
+      // 将按钮添加到控制面板
+      controlPanel.appendChild(sourceButton);
+      controlPanel.appendChild(zoomButton);
+      controlPanel.appendChild(downloadButton);
+      controlPanel.appendChild(svgButton);
+      controlPanel.appendChild(pngButton);
+      
+      // 构建完整的容器结构
+      container.appendChild(imgContainer);
       container.appendChild(controlPanel);
       
       // 插入容器
@@ -894,7 +924,7 @@ window.dotRenderer = (function() {
     URL.revokeObjectURL(url);
   }
   
-  // 下载PNG格式
+  // 下载PNG格式 (从SVG转换)
   function downloadAsPNG(svgElement) {
     // 获取SVG尺寸
     let width = parseInt(svgElement.getAttribute('width') || 0);

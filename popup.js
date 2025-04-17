@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
   const renderButton = document.getElementById('render-button');
   const saveConfigButton = document.getElementById('save-config');
-  const formatSelect = document.getElementById('render-format');
+  const formatSvg = document.getElementById('format-svg');
+  const formatPng = document.getElementById('format-png');
   
   // 加载保存的配置
   loadConfig();
@@ -25,7 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 保存配置
 function saveConfig() {
-  const format = document.getElementById('render-format').value;
+  // 获取选中的格式
+  const formatSvg = document.getElementById('format-svg');
+  const format = formatSvg.checked ? 'svg' : 'png';
   
   // 保存到chrome.storage
   chrome.storage.sync.set({
@@ -34,7 +37,7 @@ function saveConfig() {
     // 保存成功后显示提示
     const saveButton = document.getElementById('save-config');
     const originalText = saveButton.textContent;
-    saveButton.textContent = '已保存';
+    saveButton.textContent = '已应用';
     saveButton.disabled = true;
     
     // 将配置传递给当前激活的标签页
@@ -59,7 +62,12 @@ function loadConfig() {
   chrome.storage.sync.get({
     renderFormat: 'svg' // 默认值是SVG
   }, function(items) {
-    document.getElementById('render-format').value = items.renderFormat;
+    // 更新单选按钮状态
+    if (items.renderFormat === 'svg') {
+      document.getElementById('format-svg').checked = true;
+    } else {
+      document.getElementById('format-png').checked = true;
+    }
   });
 }
 

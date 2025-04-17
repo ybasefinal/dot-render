@@ -7,29 +7,52 @@
 </head>
 <body>
   <div class="container">
-    <h1>DOT 代码渲染</h1>
+    <div class="header">
+      <h1>DOT 代码渲染</h1>
+    </div>
+    
     <div class="status">
       <div id="status-message">已启用 - 自动渲染页面中的DOT代码</div>
     </div>
-    <div class="config">
-      <div class="config-item">
-        <label>默认渲染格式：</label>
-        <select id="render-format">
-          <option value="svg">SVG</option>
-          <option value="png">PNG</option>
-        </select>
+    
+    <div class="panel">
+      <div class="section-title">渲染设置</div>
+      <div class="config">
+        <div class="config-item">
+          <label for="render-format">渲染格式:</label>
+          <div class="format-selector">
+            <label class="radio-label">
+              <input type="radio" name="format" value="svg" id="format-svg" checked>
+              <span class="radio-text">SVG</span>
+              <span class="format-desc">矢量格式，质量更高</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="format" value="png" id="format-png">
+              <span class="radio-text">PNG</span>
+              <span class="format-desc">位图格式，兼容性更好</span>
+            </label>
+          </div>
+        </div>
+        <button id="save-config" class="primary-button">应用设置</button>
       </div>
-      <button id="save-config">保存配置</button>
+      
+      <div class="section-title">操作</div>
+      <div class="action-buttons">
+        <button id="render-button">手动渲染</button>
+      </div>
     </div>
-    <div class="buttons">
-      <button id="render-button">手动渲染</button>
-    </div>
+    
     <div class="info">
-      <p>使用说明:</p>
+      <div class="section-title">使用说明</div>
       <ul>
-        <li>在页面中使用 <code>&lt;pre class="dot"&gt;...&lt;/pre&gt;</code> 标签包围DOT代码</li>
-        <li>或者使用三个反引号标记的代码块: <code>```dot ... ```</code></li>
+        <li>在页面中使用 <code>&lt;pre class="dot"&gt;...&lt;/pre&gt;</code> 包围DOT代码</li>
+        <li>或使用三个反引号标记: <code>```dot ... ```</code></li>
+        <li>点击SVG/PNG按钮可以直接切换页面上图形的显示格式</li>
       </ul>
+    </div>
+    
+    <div class="footer">
+      <span>DOT Renderer v1.0</span>
     </div>
   </div>
   <script src="popup.js"></script>

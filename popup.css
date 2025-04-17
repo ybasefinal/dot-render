@@ -1,70 +1,178 @@
 body {
-  font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-  width: 300px;
+  font-family: 'Segoe UI', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+  width: 320px;
   margin: 0;
   padding: 0;
-  background-color: #f5f5f5;
+  background-color: #f8f9fa;
+  color: #333;
 }
 
 .container {
-  padding: 15px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.header {
+  background-color: #4caf50;
+  padding: 12px 16px;
+  text-align: center;
 }
 
 h1 {
   font-size: 18px;
-  color: #333;
-  margin-top: 0;
-  margin-bottom: 15px;
-  text-align: center;
+  color: white;
+  margin: 0;
+  font-weight: 500;
 }
 
 .status {
   background-color: #e8f5e9;
-  border: 1px solid #c8e6c9;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 15px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #c8e6c9;
 }
 
 #status-message {
   color: #2e7d32;
   text-align: center;
+  font-size: 14px;
 }
 
-.buttons {
+.panel {
+  background-color: white;
+  padding: 16px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #424242;
+  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.config {
+  margin-bottom: 20px;
+}
+
+.config-item {
+  margin-bottom: 12px;
+}
+
+.config-item label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 13px;
+  color: #5f6368;
+}
+
+.format-selector {
   display: flex;
-  justify-content: center;
-  margin-bottom: 15px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.radio-label:hover {
+  background-color: #f5f5f5;
+}
+
+.radio-label input[type="radio"] {
+  margin-right: 10px;
+}
+
+.radio-label input[type="radio"]:checked + .radio-text {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.radio-text {
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.format-desc {
+  font-size: 12px;
+  color: #757575;
+  margin-left: auto;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 button {
-  background-color: #4caf50;
-  color: white;
+  background-color: #f1f3f4;
+  color: #5f6368;
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 500;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  flex: 1;
 }
 
 button:hover {
-  background-color: #388e3c;
+  background-color: #e8eaed;
+}
+
+.primary-button {
+  background-color: #4caf50;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.primary-button:hover {
+  background-color: #43a047;
+}
+
+#render-button {
+  background-color: #2196f3;
+  color: white;
+}
+
+#render-button:hover {
+  background-color: #1e88e5;
 }
 
 .info {
-  background-color: #e3f2fd;
-  border: 1px solid #bbdefb;
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 12px;
-}
-
-.info p {
-  margin-top: 0;
-  font-weight: bold;
+  background-color: #f8f9fa;
+  padding: 16px;
+  font-size: 13px;
+  color: #5f6368;
+  border-top: 1px solid #e0e0e0;
 }
 
 .info ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.info li {
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.info li:last-child {
   margin-bottom: 0;
 }
 
@@ -72,44 +180,15 @@ code {
   background-color: #f1f1f1;
   padding: 2px 4px;
   border-radius: 3px;
-  font-family: Consolas, 'Courier New', monospace;
-}
-
-/* 添加配置区域样式 */
-.config {
-  margin: 10px 0;
-  padding: 10px;
-  background-color: #f8f9fa;
-  border-radius: 4px;
-}
-
-.config-item {
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-}
-
-.config-item label {
-  margin-right: 8px;
-  font-weight: 500;
-}
-
-.config-item select {
-  padding: 4px 8px;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-}
-
-#save-config {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 3px;
-  cursor: pointer;
+  font-family: 'Consolas', 'Courier New', monospace;
   font-size: 12px;
 }
 
-#save-config:hover {
-  background-color: #388e3c;
+.footer {
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 11px;
+  color: #757575;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
 } 
