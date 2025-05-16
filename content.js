@@ -146,7 +146,7 @@ window.dotRenderer = (function() {
     
     try {
       // 查找所有预格式化的DOT代码块
-      const preElements = Array.from(document.querySelectorAll('pre.dot, pre[class*="language-dot"], pre.mdr-code-block code'));
+      const preElements = Array.from(document.querySelectorAll('pre.dot, pre[class*="language-dot"], pre.mdr-code-block code, .language-graphviz pre'));
       
       // 查找所有标记为DOT的代码块（例如Markdown中的```dot）
       const codeBlocks = Array.from(document.querySelectorAll('code[class*="language-dot"]'));
